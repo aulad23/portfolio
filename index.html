@@ -6,22 +6,22 @@
   <title>Aulad Hossain — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy:  #0A0F1E;
-      --card:  #111827;
-      --card2: #162032;
-      --blue:  #38BDF8;
-      --blue2: #818CF8;
-      --green: #34D399;
-      --muted: #4B5563;
-      --text:  #F9FAFB;
-      --text2: #9CA3AF;
-      --border:#1F2937;
-      --r: 14px;
+      --navy:  #0f172a;
+      --card:  #1e293b;
+      --card2: #263146;
+      --blue:  #60a5fa;
+      --blue2: #a78bfa;
+      --green: #34d399;
+      --muted: #64748b;
+      --text:  #f1f5f9;
+      --text2: #94a3b8;
+      --border:#334155;
+      --r: 12px;
     }
 
     html { scroll-behavior: smooth; }
@@ -47,13 +47,14 @@
     .orb3 { width: 300px; height: 300px; background: #34D399; top: 40%; left: 30%; animation-duration: 15s; animation-delay: -4s; }
     @keyframes drift { 0%{ transform: translate(0,0) scale(1); } 100%{ transform: translate(40px,60px) scale(1.1); } }
 
-    /* ── DOT GRID ── */
+    /* ── SUBTLE GRID ── */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image: radial-gradient(circle, #1F2937 1px, transparent 1px);
-      background-size: 32px 32px;
-      opacity: .4;
+      background-image: linear-gradient(rgba(96,165,250,.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(96,165,250,.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 1;
     }
 
     /* ── NAV ── */
@@ -180,7 +181,7 @@
       content: ''; width: 32px; height: 2px; background: var(--blue); display: block;
     }
     .hero-text h1 {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 3.4rem; font-weight: 800; line-height: 1.1;
       background: linear-gradient(135deg, #F9FAFB 30%, #38BDF8 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -235,7 +236,7 @@
     }
     .sec-label::before { content: ''; width: 24px; height: 2px; background: var(--blue); }
     .sec-title {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 2.1rem; font-weight: 800; margin-bottom: 48px;
     }
 
@@ -254,7 +255,7 @@
     }
     .stat-card:hover { border-color: rgba(56,189,248,.3); transform: translateY(-3px); }
     .stat-num {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 1.9rem; font-weight: 800;
       background: linear-gradient(135deg, var(--blue), var(--blue2));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -275,14 +276,19 @@
       backdrop-filter: blur(10px);
     }
     .glass h3 {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: .78rem; font-weight: 700; color: var(--blue);
       text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px;
     }
     .glass p { color: var(--text2); font-size: .87rem; margin-bottom: 10px; line-height: 1.75; }
-    .ci { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
-    .ci-ico { font-size: .95rem; flex-shrink: 0; margin-top: 2px; }
-    .ci a, .ci p { color: var(--text2); font-size: .84rem; text-decoration: none; margin: 0; }
+    .ci { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+    .ci-ico {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.2);
+    }
+    .ci-ico svg { width: 15px; height: 15px; fill: var(--blue); flex-shrink: 0; }
+    .ci a, .ci p { color: var(--text2); font-size: .85rem; text-decoration: none; margin: 0; line-height: 1.5; }
     .ci a:hover { color: var(--blue); }
 
     /* automation pipeline */
@@ -337,7 +343,7 @@
     }
     .tl-card:hover { border-color: rgba(56,189,248,.3); }
     .tl-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
-    .tl-role { font-family: 'Montserrat', sans-serif; font-size: 1.05rem; font-weight: 700; }
+    .tl-role { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; }
     .tl-company { color: var(--blue); font-size: .88rem; font-weight: 600; margin-top: 3px; }
     .tl-date {
       font-size: .75rem; font-weight: 600; color: var(--blue2);
@@ -365,7 +371,7 @@
     }
     .edu-icon.running { background: rgba(56,189,248,.1); }
     .edu-icon.done    { background: rgba(100,116,139,.1); }
-    .edu-info h3 { font-family: 'Montserrat', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: 3px; }
+    .edu-info h3 { font-family: 'Space Grotesk', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: 3px; }
     .edu-info p  { color: var(--text2); font-size: .85rem; }
     .edu-badge {
       display: inline-block; font-size: .68rem; font-weight: 700;
@@ -419,7 +425,7 @@
     }
     .proj-card:hover { border-color: rgba(56,189,248,.2); transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
     .proj-card:hover::before { opacity: 1; }
-    .proj-card h3 { font-family: 'Montserrat', sans-serif; font-size: .98rem; font-weight: 700; margin-bottom: 10px; }
+    .proj-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: .98rem; font-weight: 700; margin-bottom: 10px; }
     .proj-card p { color: var(--text2); font-size: .85rem; flex: 1; line-height: 1.7; }
     .proj-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; }
     .tag {
@@ -446,12 +452,13 @@
     }
     .c-box:hover { border-color: rgba(56,189,248,.2); }
     .c-ico {
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-      background: rgba(56,189,248,.1); display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
+      width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.2);
+      display: flex; align-items: center; justify-content: center;
     }
+    .c-ico svg { width: 18px; height: 18px; fill: var(--blue); }
     .c-info h4 {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: .75rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: .1em;
       color: var(--blue); margin-bottom: 6px;
@@ -487,7 +494,7 @@
     }
     .modal-overlay.open .modal-box { transform: translateY(0); }
     .modal-box h3 {
-      font-family: 'Montserrat', sans-serif; font-size: 1rem;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1rem;
       font-weight: 700; margin-bottom: 6px;
     }
     .modal-box p { font-size: .82rem; color: var(--text2); margin-bottom: 18px; }
@@ -564,13 +571,13 @@
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobile-menu">
-  <a href="#hero"       onclick="closeMenu()"><span class="m-ico">🏠</span> Home</a>
-  <a href="#about"      onclick="closeMenu()"><span class="m-ico">👤</span> About</a>
-  <a href="#experience" onclick="closeMenu()"><span class="m-ico">💼</span> Experience</a>
-  <a href="#education"  onclick="closeMenu()"><span class="m-ico">🎓</span> Education</a>
-  <a href="#skills"     onclick="closeMenu()"><span class="m-ico">🛠️</span> Skills</a>
-  <a href="#projects"   onclick="closeMenu()"><span class="m-ico">🚀</span> Projects</a>
-  <a href="#contact"    onclick="closeMenu()"><span class="m-ico">✉️</span> Contact</a>
+  <a href="#hero"       onclick="closeMenu()"><span class="m-ico"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span> Home</a>
+  <a href="#about"      onclick="closeMenu()"><span class="m-ico"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></span> About</a>
+  <a href="#experience" onclick="closeMenu()"><span class="m-ico"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36 0-2.55-2.08-4.64-4.64-4.64-1.37 0-2.6.59-3.48 1.53C9 2.59 7.77 2 6.41 2 3.86 2 1.78 4.09 1.78 6.64c0 .48.11.92.18 1.36H0v14h20V6zm-8-3.5c1.38 0 2.5 1.12 2.5 2.5 0 .48-.14.93-.38 1.32-.55-.82-1.5-1.32-2.12-1.32s-1.57.5-2.12 1.32c-.24-.39-.38-.84-.38-1.32 0-1.38 1.12-2.5 2.5-2.5zM6.41 3.5c1.38 0 2.5 1.12 2.5 2.5 0 .48-.14.93-.38 1.32-.55-.82-1.5-1.32-2.12-1.32s-1.57.5-2.12 1.32C4.05 6.93 3.91 6.48 3.91 6c0-1.38 1.12-2.5 2.5-2.5zM1.5 19V7.5h17V19H1.5z"/></svg></span> Experience</a>
+  <a href="#education"  onclick="closeMenu()"><span class="m-ico"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></span> Education</a>
+  <a href="#skills"     onclick="closeMenu()"><span class="m-ico"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg></span> Skills</a>
+  <a href="#projects"   onclick="closeMenu()"><span class="m-ico"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></span> Projects</a>
+  <a href="#contact"    onclick="closeMenu()"><span class="m-ico"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span> Contact</a>
 </div>
 
 <div class="wrap">
@@ -662,12 +669,30 @@
     <!-- Col 2: Contact Info -->
     <div class="glass">
       <h3>Contact Info</h3>
-      <div class="ci"><span class="ci-ico">📞</span><div><p>01331-588728</p><p>01408-749236</p></div></div>
-      <div class="ci"><span class="ci-ico">✉️</span><a href="mailto:auladh427@gmail.com">auladh427@gmail.com</a></div>
-      <div class="ci"><span class="ci-ico">📍</span><p>Mirpur, Dhaka-1216, Bangladesh</p></div>
-      <div class="ci"><span class="ci-ico">🔗</span><a href="https://www.linkedin.com/in/aulad-hossain-663a16391/" target="_blank">LinkedIn Profile</a></div>
-      <div class="ci"><span class="ci-ico">📘</span><a href="https://www.facebook.com/mdaulad.hossain.3382/" target="_blank">Facebook Profile</a></div>
-      <div class="ci"><span class="ci-ico">🐙</span><a href="https://github.com/aulad23" target="_blank">github.com/aulad23</a></div>
+      <div class="ci">
+        <span class="ci-ico"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg></span>
+        <div><p>01331-588728</p><p>01408-749236</p></div>
+      </div>
+      <div class="ci">
+        <span class="ci-ico"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span>
+        <a href="mailto:auladh427@gmail.com">auladh427@gmail.com</a>
+      </div>
+      <div class="ci">
+        <span class="ci-ico"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
+        <p>Mirpur, Dhaka-1216, Bangladesh</p>
+      </div>
+      <div class="ci">
+        <span class="ci-ico"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></span>
+        <a href="https://www.linkedin.com/in/aulad-hossain-663a16391/" target="_blank">LinkedIn Profile</a>
+      </div>
+      <div class="ci">
+        <span class="ci-ico"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span>
+        <a href="https://www.facebook.com/mdaulad.hossain.3382/" target="_blank">Facebook Profile</a>
+      </div>
+      <div class="ci">
+        <span class="ci-ico"><svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></span>
+        <a href="https://github.com/aulad23" target="_blank">github.com/aulad23</a>
+      </div>
     </div>
 
   </div>
@@ -706,7 +731,9 @@
   <h2 class="sec-title">Education</h2>
   <div class="edu-row">
     <div class="edu-item">
-      <div class="edu-icon running">🎓</div>
+      <div class="edu-icon running">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3.33 1.67 8.67 1.67 12 0v-5"/></svg>
+      </div>
       <div class="edu-info">
         <h3>BSc in Computer Science &amp; Engineering</h3>
         <p>Prime University, Dhaka</p>
@@ -714,7 +741,9 @@
       </div>
     </div>
     <div class="edu-item">
-      <div class="edu-icon done">🏛️</div>
+      <div class="edu-icon done">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
       <div class="edu-info">
         <h3>Diploma in Engineering</h3>
         <p>Govt. Graphic Arts Institute, Dhaka</p>
@@ -722,7 +751,9 @@
       </div>
     </div>
     <div class="edu-item">
-      <div class="edu-icon done">📚</div>
+      <div class="edu-icon done">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
       <div class="edu-info">
         <h3>SSC</h3>
         <p>Kamal Ahemad Mojumder School and College</p>
@@ -838,7 +869,7 @@
   <h2 class="sec-title">Get In Touch</h2>
   <div class="contact-grid">
     <div class="c-box">
-      <div class="c-ico">📞</div>
+      <div class="c-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg></div>
       <div class="c-info">
         <h4>Phone</h4>
         <a href="tel:+8801331588728">01331-588728</a>
@@ -846,36 +877,36 @@
       </div>
     </div>
     <div class="c-box">
-      <div class="c-ico">✉️</div>
+      <div class="c-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
       <div class="c-info">
         <h4>Email</h4>
-        <a href="mailto:Auladh427@gmail.com">Auladh427@gmail.com</a>
+        <a href="mailto:auladh427@gmail.com">auladh427@gmail.com</a>
       </div>
     </div>
     <div class="c-box">
-      <div class="c-ico">🔗</div>
+      <div class="c-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div>
       <div class="c-info">
         <h4>LinkedIn</h4>
         <a href="https://www.linkedin.com/in/aulad-hossain-663a16391/" target="_blank">Aulad Hossain</a>
       </div>
     </div>
     <div class="c-box">
-      <div class="c-ico">📘</div>
+      <div class="c-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
       <div class="c-info">
         <h4>Facebook</h4>
         <a href="https://www.facebook.com/mdaulad.hossain.3382/" target="_blank">Md Aulad Hossain</a>
       </div>
     </div>
     <div class="c-box">
-      <div class="c-ico">🐙</div>
+      <div class="c-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></div>
       <div class="c-info">
         <h4>GitHub</h4>
         <a href="https://github.com/aulad23" target="_blank">github.com/aulad23</a>
-        <p style="font-size:.78rem;color:var(--muted);margin-top:2px;">25 public repositories</p>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:2px;">25+ public repositories</p>
       </div>
     </div>
     <div class="c-box">
-      <div class="c-ico">💼</div>
+      <div class="c-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36 0-2.55-2.08-4.64-4.64-4.64-1.37 0-2.6.59-3.48 1.53C9 2.59 7.77 2 6.41 2 3.86 2 1.78 4.09 1.78 6.64c0 .48.11.92.18 1.36H0v14h20V6zm-8-3.5c1.38 0 2.5 1.12 2.5 2.5 0 .48-.14.93-.38 1.32-.55-.82-1.5-1.32-2.12-1.32s-1.57.5-2.12 1.32C9.64 6.93 9.5 6.48 9.5 6c0-1.38 1.12-2.5 2.5-2.5zM6.41 3.5c1.38 0 2.5 1.12 2.5 2.5 0 .48-.14.93-.38 1.32-.55-.82-1.5-1.32-2.12-1.32s-1.57.5-2.12 1.32C4.05 6.93 3.91 6.48 3.91 6c0-1.38 1.12-2.5 2.5-2.5zM1.5 19V7.5h17V19H1.5z"/></svg></div>
       <div class="c-info">
         <h4>Current Role</h4>
         <p>Associate Automation Engineer</p>
