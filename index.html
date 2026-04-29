@@ -80,6 +80,48 @@
     .nav-links a:hover { color: var(--blue); }
     .nav-links a:hover::after { width: 100%; }
 
+    /* ── HAMBURGER ── */
+    .hamburger {
+      display: none; flex-direction: column; justify-content: center;
+      gap: 5px; width: 36px; height: 36px;
+      background: none; border: none; cursor: pointer; padding: 4px; z-index: 101;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text2); border-radius: 2px;
+      transition: all .3s ease; transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--blue); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--blue); }
+
+    /* ── MOBILE MENU ── */
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 70px; left: 0; right: 0; z-index: 99;
+      background: rgba(10,15,30,.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(56,189,248,.15);
+      padding: 0 20px;
+      max-height: 0; overflow: hidden;
+      transition: max-height .35s ease, padding .35s ease;
+    }
+    .mobile-menu.open {
+      max-height: 400px;
+      padding: 12px 20px 20px;
+    }
+    .mobile-menu a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 0;
+      color: var(--text2); text-decoration: none;
+      font-size: .95rem; font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      transition: color .2s;
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .mobile-menu a:hover { color: var(--blue); }
+    .mobile-menu a .m-ico { font-size: 1rem; width: 20px; text-align: center; }
+
     /* ── WRAPPER ── */
     .wrap { position: relative; z-index: 1; }
     section { padding: 110px 60px 80px; max-width: 1100px; margin: 0 auto; scroll-margin-top: 72px; }
@@ -466,6 +508,9 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 820px) {
       nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .mobile-menu { display: block; }
       section { padding: 80px 20px 60px; }
       #hero { flex-direction: column; gap: 32px; text-align: center; padding-top: 110px; }
       .hero-greeting { justify-content: center; }
@@ -474,7 +519,6 @@
       .hero-desc { margin: 14px auto 0; }
       #about .about-grid, #contact .contact-grid { grid-template-columns: 1fr; }
       .about-stats { grid-template-columns: repeat(2, 1fr); }
-      .nav-links li:nth-child(n+5) { display: none; }
     }
   </style>
 </head>
@@ -499,6 +543,7 @@
     </svg>
   </a>
   <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#education">Education</a></li>
@@ -506,7 +551,25 @@
     <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+
+  <!-- Hamburger (mobile only) -->
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#hero"       onclick="closeMenu()"><span class="m-ico">🏠</span> Home</a>
+  <a href="#about"      onclick="closeMenu()"><span class="m-ico">👤</span> About</a>
+  <a href="#experience" onclick="closeMenu()"><span class="m-ico">💼</span> Experience</a>
+  <a href="#education"  onclick="closeMenu()"><span class="m-ico">🎓</span> Education</a>
+  <a href="#skills"     onclick="closeMenu()"><span class="m-ico">🛠️</span> Skills</a>
+  <a href="#projects"   onclick="closeMenu()"><span class="m-ico">🚀</span> Projects</a>
+  <a href="#contact"    onclick="closeMenu()"><span class="m-ico">✉️</span> Contact</a>
+</div>
 
 <div class="wrap">
 
@@ -842,6 +905,18 @@
 </footer>
 
 <script>
+  /* ── Mobile menu ── */
+  function toggleMenu() {
+    const btn  = document.getElementById('hamburger');
+    const menu = document.getElementById('mobile-menu');
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobile-menu').classList.remove('open');
+  }
+
   /* ── Admin password (change this to your own password) ── */
   const ADMIN_PASS = 'aulad@2026';
 
