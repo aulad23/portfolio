@@ -1097,7 +1097,11 @@
   <div class="contact-form-wrap">
     <h3>Send Me a Message</h3>
     <p class="cf-sub">Fill out the form below and I'll get back to you as soon as possible.</p>
-    <form id="contact-form" novalidate>
+    <form id="contact-form" action="https://formsubmit.co/auladh427@gmail.com" method="POST" novalidate>
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="Portfolio Contact — New Message">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="https://aulad23.github.io/portfolio/">
       <div class="cf-row">
         <div class="cf-group">
           <label for="cf-name">Name</label>
@@ -1237,7 +1241,17 @@
     const submitBtn= document.getElementById('cf-submit');
     const feedback = document.getElementById('cf-feedback');
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    const fakeLocal  = /^(admin|test|noreply|no-reply|info|support|user|example|fake|demo|null|none|temp|tempmail|spam|trash|abc|xyz|aaa|bbb|123)$/i;
+    const fakeDomains = ['mailinator.com','guerrillamail.com','10minutemail.com','throwam.com','yopmail.com','trashmail.com','sharklasers.com','dispostable.com'];
+
+    function isValidEmail(v) {
+      if (!emailRegex.test(v)) return { ok: false, msg: 'Invalid email! Please enter a valid email address.' };
+      const [local, domain] = v.split('@');
+      if (fakeLocal.test(local)) return { ok: false, msg: 'Please use your real email address.' };
+      if (fakeDomains.includes(domain.toLowerCase())) return { ok: false, msg: 'Disposable emails are not allowed.' };
+      return { ok: true };
+    }
 
     function setErr(input, errId, msg) {
       input.classList.add('invalid'); input.classList.remove('valid');
@@ -1261,11 +1275,11 @@
     emailEl.addEventListener('blur', () => {
       const v = emailEl.value.trim();
       if (!v) { setErr(emailEl,'err-email','Email is required.'); return; }
-      if (!emailRegex.test(v)) { setErr(emailEl,'err-email','Invalid email! Please enter a valid email address.'); return; }
-      setOk(emailEl,'err-email');
+      const chk = isValidEmail(v);
+      chk.ok ? setOk(emailEl,'err-email') : setErr(emailEl,'err-email', chk.msg);
     });
     emailEl.addEventListener('input', () => {
-      if (emailEl.classList.contains('invalid') && emailRegex.test(emailEl.value.trim())) setOk(emailEl,'err-email');
+      if (emailEl.classList.contains('invalid') && isValidEmail(emailEl.value.trim()).ok) setOk(emailEl,'err-email');
     });
 
     msgEl.addEventListener('blur', () => {
@@ -1287,10 +1301,11 @@
       else         setOk(nameEl,'err-name');
 
       if (!email) { setErr(emailEl,'err-email','Email is required.'); valid = false; }
-      else if (!emailRegex.test(email)) {
-        setErr(emailEl,'err-email','Invalid email! Please enter a valid email address.');
-        valid = false;
-      } else       setOk(emailEl,'err-email');
+      else {
+        const chk = isValidEmail(email);
+        if (!chk.ok) { setErr(emailEl,'err-email', chk.msg); valid = false; }
+        else setOk(emailEl,'err-email');
+      }
 
       if (!msg)   { setErr(msgEl,'err-msg','Message is required.'); valid = false; }
       else         setOk(msgEl,'err-msg');
@@ -1305,21 +1320,25 @@
       submitBtn.textContent = '⏳ Sending...';
 
       try {
-        const data = new FormData();
-        data.append('name', name);
-        data.append('email', email);
-        data.append('message', msg);
-        data.append('_subject', 'Portfolio Contact — New Message');
-        data.append('_captcha', 'false');
-        data.append('_template', 'table');
-
         const res = await fetch('https://formsubmit.co/ajax/auladh427@gmail.com', {
           method: 'POST',
-          body: data,
-          headers: { 'Accept': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            message: msg,
+            _subject: 'Portfolio Contact — New Message',
+            _template: 'table',
+            _captcha: 'false'
+          })
         });
 
-        if (res.ok) {
+        const json = await res.json();
+
+        if (res.ok && json.success === 'true') {
           feedback.className = 'success';
           feedback.textContent = '✅ Message sent! I will get back to you soon.';
           form.reset();
@@ -1327,11 +1346,12 @@
           clearState(emailEl,'err-email');
           clearState(msgEl,'err-msg');
         } else {
-          throw new Error('Server error');
+          throw new Error('failed');
         }
       } catch {
-        feedback.className = 'error';
-        feedback.textContent = '❌ Something went wrong. Please try again or email directly.';
+        /* AJAX failed → fall back to normal POST (will redirect to _next = portfolio) */
+        form.submit();
+        return;
       }
 
       submitBtn.disabled = false;
