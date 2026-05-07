@@ -1215,10 +1215,12 @@
     el._t = setTimeout(() => { el.style.display = 'none'; }, 5000);
   }
 
-  /* ── Load photo: GitHub raw first, fallback localStorage ── */
+  /* ── Load latest photo (cache-bust so GitHub CDN always serves fresh) ── */
   window.addEventListener('DOMContentLoaded', () => {
-    const local = localStorage.getItem('profile_photo_url');
-    if (local) document.getElementById('profile-photo').src = local + '?v=' + Date.now();
+    const imgEl = document.getElementById('profile-photo');
+    const saved = localStorage.getItem('profile_photo_url');
+    /* Always load from GitHub Pages with cache-bust — picks up latest committed photo */
+    imgEl.src = (saved || 'image/20230423_214741.jpg') + (saved ? '' : '?v=' + Date.now());
   });
 
   /* ── Open / close modal ── */
@@ -1251,56 +1253,76 @@
     return atob(s.join(''));
   }
 
+  /* Compress image via Canvas — max 800px wide, quality 0.82 → stays under 1MB */
+  function compressImage(file) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const MAX = 800;
+        let w = img.width, h = img.height;
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = url;
+    });
+  }
+
   async function changePhoto(e) {
     const f = e.target.files[0];
     if (!f) return;
 
-    const reader = new FileReader();
-    reader.onload = async (ev) => {
-      const dataUrl = ev.target.result;
-      document.getElementById('profile-photo').src = dataUrl;
+    showPhotoStatus('⏳ Compressing image...', 'blue');
 
-      const b64 = dataUrl.split(',')[1];
-      const token = _rt();
+    const dataUrl = await compressImage(f);
+    document.getElementById('profile-photo').src = dataUrl;
 
-      showPhotoStatus('⏳ Uploading photo...', 'blue');
+    const b64    = dataUrl.split(',')[1];
+    const token  = _rt();
+    const sizeKB = Math.round(b64.length * 0.75 / 1024);
 
-      try {
-        const infoRes = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_IMG_PATH}`, {
-          headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-        });
-        const info = await infoRes.json();
-        const sha  = info.sha;
+    showPhotoStatus(`⏳ Uploading (${sizeKB} KB)...`, 'blue');
 
-        const putRes = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_IMG_PATH}`, {
-          method: 'PUT',
-          headers: {
-            Authorization: `token ${token}`,
-            Accept: 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: 'Update profile photo',
-            content: b64,
-            sha: sha
-          })
-        });
+    try {
+      const infoRes = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_IMG_PATH}`, {
+        headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+      });
+      const info = await infoRes.json();
+      const sha  = info.sha;
 
-        if (putRes.ok) {
-          localStorage.setItem('profile_photo_url', GH_IMG_URL);
-          setTimeout(() => {
-            document.getElementById('profile-photo').src = GH_IMG_URL + '?v=' + Date.now();
-          }, 35000);
-          showPhotoStatus('✅ Photo updated! All devices sync in ~30 sec.', 'green');
-        } else {
-          const err = await putRes.json();
-          showPhotoStatus('❌ Failed: ' + (err.message || 'error'), 'red');
-        }
-      } catch {
-        showPhotoStatus('❌ Network error. Try again.', 'red');
+      const putRes = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_IMG_PATH}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Update profile photo',
+          content: b64,
+          sha: sha
+        })
+      });
+
+      if (putRes.ok) {
+        const v = Date.now();
+        localStorage.setItem('profile_photo_url', GH_IMG_URL + '?v=' + v);
+        /* GitHub Pages rebuild takes ~60s — reload photo after that */
+        setTimeout(() => {
+          document.getElementById('profile-photo').src = GH_IMG_URL + '?v=' + Date.now();
+        }, 65000);
+        showPhotoStatus('✅ Done! Portfolio updates for all devices in ~1 min.', 'green');
+      } else {
+        const err = await putRes.json();
+        showPhotoStatus('❌ Failed: ' + (err.message || 'server error'), 'red');
       }
-    };
-    reader.readAsDataURL(f);
+    } catch {
+      showPhotoStatus('❌ Network error. Try again.', 'red');
+    }
   }
 
   /* ── Close modal on overlay click ── */
