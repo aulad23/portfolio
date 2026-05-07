@@ -627,6 +627,34 @@
     }
     .cf-btn:hover { opacity: .9; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(56,189,248,.3); }
     .cf-btn:active { transform: translateY(0); }
+    .cf-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+    .cf-err {
+      display: block; font-size: .76rem; color: #f87171;
+      margin-top: 5px; min-height: 1em; font-weight: 500;
+    }
+    .cf-group input.invalid, .cf-group textarea.invalid {
+      border-color: #f87171;
+      box-shadow: 0 0 0 3px rgba(248,113,113,.15);
+    }
+    .cf-group input.valid, .cf-group textarea.valid {
+      border-color: #34d399;
+      box-shadow: 0 0 0 3px rgba(52,211,153,.1);
+    }
+    #cf-feedback {
+      margin-bottom: 14px; font-size: .88rem; font-weight: 600;
+      padding: 12px 16px; border-radius: 8px;
+      display: none;
+    }
+    #cf-feedback.success {
+      display: block;
+      background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.3);
+      color: #34d399;
+    }
+    #cf-feedback.error {
+      display: block;
+      background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.3);
+      color: #f87171;
+    }
     @media (max-width: 820px) {
       .cf-row { grid-template-columns: 1fr; }
       .contact-form-wrap { padding: 20px; }
@@ -1069,25 +1097,26 @@
   <div class="contact-form-wrap">
     <h3>Send Me a Message</h3>
     <p class="cf-sub">Fill out the form below and I'll get back to you as soon as possible.</p>
-    <form action="https://formsubmit.co/auladh427@gmail.com" method="POST">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_subject" value="Portfolio Contact — New Message">
-      <input type="hidden" name="_template" value="table">
+    <form id="contact-form" novalidate>
       <div class="cf-row">
         <div class="cf-group">
           <label for="cf-name">Name</label>
-          <input type="text" id="cf-name" name="name" placeholder="Your full name" required>
+          <input type="text" id="cf-name" name="name" placeholder="Your full name">
+          <span class="cf-err" id="err-name"></span>
         </div>
         <div class="cf-group">
           <label for="cf-email">Email</label>
-          <input type="email" id="cf-email" name="email" placeholder="your@email.com" required>
+          <input type="email" id="cf-email" name="email" placeholder="your@email.com">
+          <span class="cf-err" id="err-email"></span>
         </div>
       </div>
       <div class="cf-group">
         <label for="cf-msg">Message</label>
-        <textarea id="cf-msg" name="message" placeholder="Write your message here..." required></textarea>
+        <textarea id="cf-msg" name="message" placeholder="Write your message here..."></textarea>
+        <span class="cf-err" id="err-msg"></span>
       </div>
-      <button type="submit" class="cf-btn">&#9993; Send Message</button>
+      <div id="cf-feedback"></div>
+      <button type="submit" class="cf-btn" id="cf-submit">&#9993; Send Message</button>
     </form>
   </div>
 </section>
@@ -1198,6 +1227,117 @@
     setTimeout(type, del ? 40 : 70);
   }
   type();
+
+  /* ── Contact Form Validation & AJAX Submit ── */
+  (function() {
+    const form     = document.getElementById('contact-form');
+    const nameEl   = document.getElementById('cf-name');
+    const emailEl  = document.getElementById('cf-email');
+    const msgEl    = document.getElementById('cf-msg');
+    const submitBtn= document.getElementById('cf-submit');
+    const feedback = document.getElementById('cf-feedback');
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    function setErr(input, errId, msg) {
+      input.classList.add('invalid'); input.classList.remove('valid');
+      document.getElementById(errId).textContent = msg;
+    }
+    function setOk(input, errId) {
+      input.classList.add('valid'); input.classList.remove('invalid');
+      document.getElementById(errId).textContent = '';
+    }
+    function clearState(input, errId) {
+      input.classList.remove('invalid','valid');
+      document.getElementById(errId).textContent = '';
+    }
+
+    /* Live validation on blur */
+    nameEl.addEventListener('blur', () => {
+      nameEl.value.trim() ? setOk(nameEl,'err-name') : setErr(nameEl,'err-name','Name is required.');
+    });
+    nameEl.addEventListener('input', () => { if(nameEl.classList.contains('invalid') && nameEl.value.trim()) setOk(nameEl,'err-name'); });
+
+    emailEl.addEventListener('blur', () => {
+      const v = emailEl.value.trim();
+      if (!v) { setErr(emailEl,'err-email','Email is required.'); return; }
+      if (!emailRegex.test(v)) { setErr(emailEl,'err-email','Invalid email! Please enter a valid email address.'); return; }
+      setOk(emailEl,'err-email');
+    });
+    emailEl.addEventListener('input', () => {
+      if (emailEl.classList.contains('invalid') && emailRegex.test(emailEl.value.trim())) setOk(emailEl,'err-email');
+    });
+
+    msgEl.addEventListener('blur', () => {
+      msgEl.value.trim() ? setOk(msgEl,'err-msg') : setErr(msgEl,'err-msg','Message is required.');
+    });
+    msgEl.addEventListener('input', () => { if(msgEl.classList.contains('invalid') && msgEl.value.trim()) setOk(msgEl,'err-msg'); });
+
+    /* Submit */
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      feedback.className = ''; feedback.style.display = 'none';
+
+      const name  = nameEl.value.trim();
+      const email = emailEl.value.trim();
+      const msg   = msgEl.value.trim();
+      let valid = true;
+
+      if (!name)  { setErr(nameEl,'err-name','Name is required.'); valid = false; }
+      else         setOk(nameEl,'err-name');
+
+      if (!email) { setErr(emailEl,'err-email','Email is required.'); valid = false; }
+      else if (!emailRegex.test(email)) {
+        setErr(emailEl,'err-email','Invalid email! Please enter a valid email address.');
+        valid = false;
+      } else       setOk(emailEl,'err-email');
+
+      if (!msg)   { setErr(msgEl,'err-msg','Message is required.'); valid = false; }
+      else         setOk(msgEl,'err-msg');
+
+      if (!valid) {
+        feedback.className = 'error';
+        feedback.textContent = '⚠ Please fix the errors above before sending.';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Sending...';
+
+      try {
+        const data = new FormData();
+        data.append('name', name);
+        data.append('email', email);
+        data.append('message', msg);
+        data.append('_subject', 'Portfolio Contact — New Message');
+        data.append('_captcha', 'false');
+        data.append('_template', 'table');
+
+        const res = await fetch('https://formsubmit.co/ajax/auladh427@gmail.com', {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (res.ok) {
+          feedback.className = 'success';
+          feedback.textContent = '✅ Message sent! I will get back to you soon.';
+          form.reset();
+          clearState(nameEl,'err-name');
+          clearState(emailEl,'err-email');
+          clearState(msgEl,'err-msg');
+        } else {
+          throw new Error('Server error');
+        }
+      } catch {
+        feedback.className = 'error';
+        feedback.textContent = '❌ Something went wrong. Please try again or email directly.';
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '&#9993; Send Message';
+    });
+  })();
 
   /* ── Phone reveal (auto-hide on mouse leave) ── */
   function revealPhone(btn, num1, num2) {
