@@ -511,6 +511,14 @@
     .modal-btns { display: flex; gap: 10px; }
     .modal-btns .btn { flex: 1; justify-content: center; font-size: .85rem; padding: 9px; }
 
+    /* ── PHOTO PREVIEW MODAL ── */
+    #preview-modal .modal-box { width: 300px; text-align: center; }
+    #preview-modal .preview-img {
+      width: 130px; height: 130px; border-radius: 50%;
+      object-fit: cover; border: 3px solid var(--blue);
+      margin: 0 auto 18px; display: block;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 820px) {
       nav { padding: 12px 18px; }
@@ -1159,6 +1167,19 @@
   </div>
 </div>
 
+<!-- PHOTO PREVIEW MODAL -->
+<div class="modal-overlay" id="preview-modal">
+  <div class="modal-box">
+    <h3>📸 New Photo</h3>
+    <p>Save this as your profile photo?</p>
+    <img id="preview-img" class="preview-img" src="" alt="Preview" />
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="cancelPhotoPreview()">Cancel</button>
+      <button class="btn btn-primary" onclick="savePhotoPreview()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- PHOTO UPLOAD STATUS -->
 <div id="photo-status" style="
   display:none; position:fixed; bottom:24px; right:24px; z-index:999;
@@ -1269,13 +1290,43 @@
     });
   }
 
+  let _pendingDataUrl = null;
+  let _oldPhotoSrc    = null;
+
+  /* Step 1: File selected → show preview with Save / Cancel */
   async function changePhoto(e) {
     const f = e.target.files[0];
     if (!f) return;
+    e.target.value = '';
 
-    showPhotoStatus('⏳ Compressing image...', 'blue');
-
+    showPhotoStatus('⏳ Compressing...', 'blue');
     const dataUrl = await compressImage(f);
+
+    _oldPhotoSrc    = document.getElementById('profile-photo').src;
+    _pendingDataUrl = dataUrl;
+
+    document.getElementById('preview-img').src = dataUrl;
+    document.getElementById('preview-modal').classList.add('open');
+  }
+
+  /* Step 2a: Cancel → restore old photo */
+  function cancelPhotoPreview() {
+    document.getElementById('preview-modal').classList.remove('open');
+    document.getElementById('profile-photo').src = _oldPhotoSrc;
+    _pendingDataUrl = null;
+    _oldPhotoSrc    = null;
+    document.getElementById('photo-status').style.display = 'none';
+  }
+
+  /* Step 2b: Save → upload to GitHub */
+  async function savePhotoPreview() {
+    document.getElementById('preview-modal').classList.remove('open');
+    if (!_pendingDataUrl) return;
+
+    const dataUrl = _pendingDataUrl;
+    _pendingDataUrl = null;
+    _oldPhotoSrc    = null;
+
     document.getElementById('profile-photo').src = dataUrl;
 
     const b64    = dataUrl.split(',')[1];
@@ -1306,7 +1357,6 @@
       });
 
       if (putRes.ok) {
-        /* GitHub Pages rebuild takes ~60-90s — then reload fresh from Pages */
         setTimeout(loadProfilePhoto, 90000);
         showPhotoStatus('✅ Done! Portfolio updates for all devices in ~1 min.', 'green');
       } else {
@@ -1318,9 +1368,12 @@
     }
   }
 
-  /* ── Close modal on overlay click ── */
+  /* ── Close modals on overlay click ── */
   document.getElementById('photo-modal').addEventListener('click', function(e) {
     if (e.target === this) closePhotoModal();
+  });
+  document.getElementById('preview-modal').addEventListener('click', function(e) {
+    if (e.target === this) cancelPhotoPreview();
   });
 
   /* ── Typing animation ── */
