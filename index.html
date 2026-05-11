@@ -1187,10 +1187,10 @@
   }
 
   /* ── Config ── */
-  const ADMIN_PASS   = 'aulad@2026';
-  const GH_REPO     = 'aulad23/portfolio';
-  const GH_IMG_PATH = 'image/20230423_214741.jpg';
-  const GH_IMG_URL  = `https://raw.githubusercontent.com/${GH_REPO}/main/${GH_IMG_PATH}`;
+  const ADMIN_PASS    = 'aulad@2026';
+  const GH_REPO       = 'aulad23/portfolio';
+  const GH_IMG_PATH   = 'image/20230423_214741.jpg';
+  const GH_PAGES_BASE = 'https://aulad23.github.io/portfolio';
 
   /* ── Photo status toast ── */
   function showPhotoStatus(msg, color) {
@@ -1203,13 +1203,22 @@
     el._t = setTimeout(() => { el.style.display = 'none'; }, 5000);
   }
 
-  /* ── Load latest photo (cache-bust so GitHub CDN always serves fresh) ── */
-  window.addEventListener('DOMContentLoaded', () => {
+  /* ── Load latest photo — GitHub API SHA as cache-buster (all devices sync) ── */
+  async function loadProfilePhoto() {
     const imgEl = document.getElementById('profile-photo');
-    const saved = localStorage.getItem('profile_photo_url');
-    /* Always load from GitHub Pages with cache-bust — picks up latest committed photo */
-    imgEl.src = (saved || 'image/20230423_214741.jpg') + (saved ? '' : '?v=' + Date.now());
-  });
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_IMG_PATH}`);
+      if (res.ok) {
+        const info = await res.json();
+        imgEl.src = `${GH_PAGES_BASE}/${GH_IMG_PATH}?v=${info.sha}`;
+      } else {
+        imgEl.src = `${GH_IMG_PATH}?v=${Date.now()}`;
+      }
+    } catch {
+      imgEl.src = `${GH_IMG_PATH}?v=${Date.now()}`;
+    }
+  }
+  window.addEventListener('DOMContentLoaded', loadProfilePhoto);
 
   /* ── Open / close modal ── */
   function openPhotoModal() {
@@ -1297,12 +1306,8 @@
       });
 
       if (putRes.ok) {
-        const v = Date.now();
-        localStorage.setItem('profile_photo_url', GH_IMG_URL + '?v=' + v);
-        /* GitHub Pages rebuild takes ~60s — reload photo after that */
-        setTimeout(() => {
-          document.getElementById('profile-photo').src = GH_IMG_URL + '?v=' + Date.now();
-        }, 65000);
+        /* GitHub Pages rebuild takes ~60-90s — then reload fresh from Pages */
+        setTimeout(loadProfilePhoto, 90000);
         showPhotoStatus('✅ Done! Portfolio updates for all devices in ~1 min.', 'green');
       } else {
         const err = await putRes.json();
