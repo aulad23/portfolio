@@ -511,6 +511,19 @@
     .modal-btns { display: flex; gap: 10px; }
     .modal-btns .btn { flex: 1; justify-content: center; font-size: .85rem; padding: 9px; }
 
+    /* ── SOURCE PICKER MODAL ── */
+    .source-box { width: 300px; }
+    .source-btns { display: flex; gap: 14px; margin-bottom: 10px; }
+    .source-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 10px; padding: 22px 10px; border-radius: 14px;
+      background: var(--navy); border: 1px solid var(--border);
+      color: var(--text); cursor: pointer; transition: border-color .2s, background .2s;
+      font-size: .85rem; font-weight: 600;
+    }
+    .source-btn:hover { border-color: var(--blue); background: rgba(56,189,248,.06); color: var(--blue); }
+    .source-btn svg { opacity: .85; }
+
     /* ── PHOTO PREVIEW MODAL ── */
     #preview-modal .modal-box { width: 300px; text-align: center; }
     #preview-modal .preview-img {
@@ -761,7 +774,8 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#38BDF8"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4z"/><path d="M9 3L7.17 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3H9zm3 14a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
         <span>Change Photo</span>
       </div>
-      <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="changePhoto(event)" />
+      <input type="file" id="camera-input"  accept="image/*" capture="environment" style="display:none" onchange="changePhoto(event)" />
+      <input type="file" id="gallery-input" accept="image/*" style="display:none" onchange="changePhoto(event)" />
     </div>
   </div>
 
@@ -1153,6 +1167,25 @@
 
 </div><!-- /wrap -->
 
+<!-- SOURCE PICKER MODAL -->
+<div class="modal-overlay" id="source-modal">
+  <div class="modal-box source-box">
+    <h3>Select Source</h3>
+    <p>How would you like to add your photo?</p>
+    <div class="source-btns">
+      <button class="source-btn" onclick="openCamera()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4z"/><path d="M9 3L7.17 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3H9zm3 14a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
+        <span>Camera</span>
+      </button>
+      <button class="source-btn" onclick="openGallery()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM5 17l3.5-4.5 2.5 3.01L14.5 11l4.5 6H5z"/></svg>
+        <span>Gallery</span>
+      </button>
+    </div>
+    <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px;font-size:.85rem;padding:9px" onclick="closeSourceModal()">Cancel</button>
+  </div>
+</div>
+
 <!-- PASSWORD MODAL -->
 <div class="modal-overlay" id="photo-modal">
   <div class="modal-box">
@@ -1252,17 +1285,42 @@
     document.getElementById('photo-modal').classList.remove('open');
   }
 
-  /* ── Verify password then open file picker ── */
+  /* ── Verify password then show source picker ── */
   function verifyPass() {
     const val = document.getElementById('modal-pass').value;
     if (val === ADMIN_PASS) {
       closePhotoModal();
-      document.getElementById('photo-input').click();
+      document.getElementById('source-modal').classList.add('open');
     } else {
       document.getElementById('modal-err').textContent = 'Wrong password. Try again.';
       document.getElementById('modal-pass').value = '';
       document.getElementById('modal-pass').focus();
     }
+  }
+
+  function closeSourceModal() {
+    document.getElementById('source-modal').classList.remove('open');
+  }
+
+  async function openCamera() {
+    closeSourceModal();
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const hasCamera = devices.some(d => d.kind === 'videoinput');
+      if (!hasCamera) {
+        showPhotoStatus('❌ No camera found on this device.', 'red');
+        return;
+      }
+    } catch {
+      showPhotoStatus('❌ Camera access denied or unavailable.', 'red');
+      return;
+    }
+    document.getElementById('camera-input').click();
+  }
+
+  function openGallery() {
+    closeSourceModal();
+    document.getElementById('gallery-input').click();
   }
 
   /* ── Change photo → commit to GitHub repo (all devices sync) ── */
@@ -1371,6 +1429,9 @@
   /* ── Close modals on overlay click ── */
   document.getElementById('photo-modal').addEventListener('click', function(e) {
     if (e.target === this) closePhotoModal();
+  });
+  document.getElementById('source-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeSourceModal();
   });
   document.getElementById('preview-modal').addEventListener('click', function(e) {
     if (e.target === this) cancelPhotoPreview();
